@@ -12,6 +12,19 @@ class Post: # pylint: disable=too-few-public-methods
         Example usage:
         Post(datetime.date.today(), 'Yash Srivastav', { content: 'abc' })
         '''
-        self.date = date
+        self.date = None
         self.author = author
         self.content = content
+        self.to = None
+        self.frm = None
+        self.posting_date = date
+        self.time = None
+
+    def __str__(self):
+        return '\n'.join(['Content: ' + str(self.content),
+                          'Author: ' + str(self.author),
+                          'Posting Date: ' + str(self.posting_date),
+                          'To: ' + str(self.to),
+                          'From: ' + str(self.frm),
+                          'Time: ' + str(self.time),
+                          'Date: ' + str(self.date)])
