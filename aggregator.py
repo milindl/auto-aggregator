@@ -19,7 +19,7 @@ class Aggregator:
     def update(self, dbs):
         since = dbs.get_last_date().strftime('%Y-%m-%d %H:%M:%S')
         posts_dict = self.graph.get_object(
-            id = GROUP_ID + '?fields=feed.limit(' + '20' + ')'
+            id = GROUP_ID + '?fields=feed.since(' + since + ')'
         )
         posts = []
         for p in posts_dict['feed']['data']:
