@@ -6,8 +6,9 @@ from post import Post
 import post_reader
 import datetime
 
-# Config?
+# Config
 GROUP_ID = '433290100027449'
+TOKEN = ''
 
 
 class Aggregator:
@@ -17,14 +18,14 @@ class Aggregator:
         self.pread = post_reader.PostReader()
 
     def update(self, dbs):
-        since = dbs.get_last_date().strftime('%Y-%m-%d %H:%M:%S')
+        since = str(dbs.get_last_date())
         posts_dict = self.graph.get_object(
             id = GROUP_ID + '?fields=feed.since(' + since + ')'
         )
         posts = []
         for p in posts_dict['feed']['data']:
             posts.append(Post(
-                date = datetime.datetime.strptime(p['created_time'],
+                posting_date = datetime.datetime.strptime(p['created_time'],
                                                   '%Y-%m-%dT%H:%M:%S%z'),
                 author = p['from']['name'],
                 content = p['message'],
@@ -49,8 +50,5 @@ class Aggregator:
         return post
 
 
-
-
 if __name__ == '__main__':
-    Aggregator(''' TOKEN HERE '''
-    ).update(DBService())
+    Aggregator(TOKEN).update(DBService())
