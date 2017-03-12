@@ -1,0 +1,20 @@
+{
+  "bitwise"       : false,
+  "camelcase"     : false,
+  "curly"         : false,
+  "eqeqeq"        : true,
+  "indent"        : 2,
+  "newcap"        : true,
+  "quotmark"      : true,
+  "undef"         : true,
+  "unused"        : true,
+  "strict"        : true,
+  "eqnull"        : true,
+  "es5"           : true,
+  "esnext"        : true,
+  "node"          : true,
+  "globalstrict"  : false,
+  "browser"       : true,
+  "nonstandard"   : true,
+  "globals"       : {}
+}
