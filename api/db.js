@@ -1,5 +1,6 @@
 "use strict";
 
+const group_id = "1304156202997238";
 
 const express = require("express");
 const pg = require("pg");
@@ -31,7 +32,7 @@ router.get("/posts", (req, res) => {
   });
 });
 
-router.post("/posts", async((req, res) => {
+router.post("/posts", (req, res) => {
   // TODO: REFACTOR URGENTLY, use PROMISES
   const message = [ "To: ", req.body.to, "\n",
                     "From: ", req.body.frm, "\n",
@@ -41,51 +42,54 @@ router.post("/posts", async((req, res) => {
                                                      .join(" "),
                     "\n",
                     "Time: ", req.body.time, "\n",
-		    "Additional Info: ", req.body.content, "\n"
+                    "Additional Info: ", req.body.content, "\n"
                   ].join("");
-  graph.post(`${group_id}/feed`, { message: message },
-             (err, result) => {
-               if (err) {
-                 console.log(err);
-                 return null;
-               }
-               let post_id =  result["id"].split("_")[1];
-               graph.get("/me?fields=name",
-                         (err2, result2) => {
-                           if (err2) {
-                             console.log(err2);
-                             return null;
-                           }
-                           let author = result2["name"];
-                           pool.connect((err3, client, done) => {
-                             if (err3) {
-                               console.log(err3);
-                               done();
-                               return res.sendStatus(500);
-                             }
-                             console.log(req.body);
-                             // 'to' is a reserved word and needs to be qouted
-                             const query = client.query("INSERT INTO posts(" +
-                                                        [
-                                                          "author", "content", "date", "frm",
-                                                          "\"to\"", "posting_date", "time", "post_id"
-                                                        ].join(",") +
-                                                        ") values($1, $2, $3, $4, $5, $6, $7, $8)",
-                                                        [
-                                                          author, req.body.content, req.body.date, req.body.frm,
-                                                          req.body.to, new Date(), req.body.time, post_id
-                                                        ]);
-                             query.on("error", (err4) => {
-                               done();
-                               console.log(err4);
-                               res.sendStatus(500);
-                             });
-                             query.on("end", () => {
-                               done();
-                               res.sendStatus(200);
-                             });
-                           });
-                         });
-             });
-}));
+  let postIdPromise = new Promise((resolve, reject) => {
+    graph.post(`${group_id}/feed`, { message: message },
+               (err, result) => {
+                 if(err)
+                   reject(err);
+                 else
+                   resolve(result["id"].split("_")[1]);
+               });
+  });
+  let authorPromise = new Promise((resolve, reject) => {
+    graph.get("/me?fields=name",
+              (err, result) => {
+                if (err)
+                  reject(err);
+                else
+                  resolve(result["name"]);
+              });
+  });
+  Promise.all([postIdPromise, authorPromise])
+    .then((values) => {
+      pool.connect((err, client, done) => {
+        // 'to' is a reserved word and needs to be qouted
+        const query = client.query("INSERT INTO posts(" +
+                                   [
+                                     "author", "content", "date", "frm",
+                                     "\"to\"", "posting_date", "time", "post_id"
+                                   ].join(",") +
+                                   ") values($1, $2, $3, $4, $5, $6, $7, $8)",
+                                   [
+                                     values[1], req.body.content, req.body.date, req.body.frm,
+                                     req.body.to, new Date(), req.body.time, values[0]
+                                   ]);
+        query.on("error", (err) => {
+          done();
+          console.log(err);
+          res.sendStatus(500);
+        });
+        query.on("end", () => {
+          done();
+          res.sendStatus(200);
+        });
+      });
+    })
+    .catch((err) => {
+      console.log(err);
+      res.sendStatus(500);
+    });
+});
 module.exports = router;
