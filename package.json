@@ -4,11 +4,12 @@
   "description": "Aggregate posts from Share Auto/Tempo into a Database",
   "main": "index.js",
   "dependencies": {
+    "asyncawait": "^1.0.6",
+    "bluebird": "^3.5.0",
     "body-parser": "^1.17.1",
     "express": "^4.15.2",
-    "expressjs": "^1.0.1",
-    "pg": "^6.1.4",
-    "promise": "^7.1.1"
+    "fbgraph": "^1.4.1",
+    "pg": "^6.1.4"
   },
   "devDependencies": {},
   "scripts": {
