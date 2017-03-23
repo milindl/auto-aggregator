@@ -1,21 +1,33 @@
+#!/bin/env node
+
 var jayson = require("jayson");
 const pg = require("pg");
-const graph = require("fbgraph");
 
 "use strict";
 
 // Refactor
-const access_token = process.env.SHARE_AUTO_FB_ACCESS_TOKEN ||
-                     "EAACEdEose0cBABzAsGNcDk1uSYGp5k88OmtwEu9T3zzZBnrqo483uFEpWu1Rb6G66a88myHbRfVVrylr5TBIdjGQp6sf9NJB5o5YSe80VbeDG8wDZBdLyYfFghQKtMjZCGhvtfHua1IiEZC31uLTCUYMGzCcqShGwr6WXjjZCrCZAR33YJ3ZBynyYqCkEp9bRrYZD"
 const group_id = process.env.SHARE_AUTO_GROUP_ID || "1304156202997238";
 const port = parseInt(process.env.SHARE_AUTO_RPC_SERVER_PORT)||
              6800;
+const user = process.env.SHARE_AUTO_PGUSER || 'postgres';
+const database = process.env.SHARE_AUTO_PGDATABASE || 'postgres';
+const password = process.env.SHARE_AUTO_PGPASSWORD || '';
+const host = process.env.SHARE_AUTO_PGHOST || 'localhost';
+const pgPort = process.env.SHARE_AUTO_PGPORT || 5432;
 
-const pool = new pg.Pool();
-graph.setAccessToken(access_token);
-graph.setVersion("2.3");
+const config = {
+  user: user,
+  database: database,
+  password: password,
+  host: host,
+  port: pgPort,
+  max: 10, // max number of clients in the pool
+  idleTimeoutMillis: 30000, // how long a client is allowed to remain idle before being closed
+};
+
+const pool = new pg.Pool(config);
 const server = jayson.server({
-  add: function(args, callback) {
+  get: function(args, callback) {
     pool.connect((err, client, done) => {
       if (err) {
 	console.log(err);
