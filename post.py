@@ -4,6 +4,7 @@ from sqlalchemy import create_engine, ForeignKey
 from sqlalchemy import Column, Date, BigInteger, String, Time, DateTime
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship, backref
+from config import postgres
 
 Base = declarative_base()
 
