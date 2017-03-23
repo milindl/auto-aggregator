@@ -8,8 +8,9 @@ import datetime
 import time
 import sqlalchemy
 from config import postgres
-INDIAN_TIMEZONE_SHIFT = 19800
 
+
+INDIAN_TIMEZONE_SHIFT = 19800
 
 class DBService:
     def __init__(self):
@@ -27,11 +28,11 @@ class DBService:
         Query database and get time of last parsed post
         '''
         # Update as per latest post time
-        # latest_post = self.session.query(Post).order_by(Post.posting_date)[-1]
-        # return latest_post.posting_date.timestamp() + INDIAN_TIMEZONE_SHIFT
+        latest_post = self.session.query(Post).order_by(Post.posting_date)[-1]
+        return latest_post.posting_date.timestamp() + INDIAN_TIMEZONE_SHIFT
         # Check on an hourly basis
         # Hourly check: the db may be updated thru our app also
-        return '-1 hour'
+        # return '-1 hour'
 
     def write(self, p):
         for pst in p:

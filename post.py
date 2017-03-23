@@ -48,7 +48,6 @@ class Post(Base):
                           'PostId: ' + str(self.post_id)
                           ])
 
-
 if __name__ == '__main__':
     engine = create_engine(''.join(['postgresql://',
                                     postgres['USERNAME'], ':',

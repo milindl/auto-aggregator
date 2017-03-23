@@ -1,11 +1,11 @@
 #!/bin/env python3
 
+from config import graph_api
 import facebook
 from db_service import DBService
 from post import Post
 import post_reader
 import datetime
-from config import graph_api
 
 
 class Aggregator:
@@ -47,8 +47,10 @@ class Aggregator:
         return post
 
 
+
 def Main():
     Aggregator(graph_api['TOKEN']).update(DBService())
 
 if __name__ == '__main__':
     Main()
+
