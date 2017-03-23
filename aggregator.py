@@ -21,13 +21,16 @@ class Aggregator:
         )
         posts = []
         for p in posts_dict['feed']['data']:
-            posts.append(Post(
-                posting_date = datetime.datetime.strptime(p['created_time'],
+            try:
+                posts.append(Post(
+                    posting_date = datetime.datetime.strptime(p['created_time'],
                                                   '%Y-%m-%dT%H:%M:%S%z'),
-                author = p['from']['name'],
-                content = p['message'],
-                post_id = p['id'].split('_')[1]
+                    author = p['from']['name'],
+                    content = p['message'],
+                    post_id = p['id'].split('_')[1]
             ))
+            except KeyError:
+                print('Post not added due to key error')
         final_posts = []
         for p in posts:
             try:

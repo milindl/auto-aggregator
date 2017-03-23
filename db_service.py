@@ -28,8 +28,12 @@ class DBService:
         Query database and get time of last parsed post
         '''
         # Update as per latest post time
-        latest_post = self.session.query(Post).order_by(Post.posting_date)[-1]
-        return latest_post.posting_date.timestamp() + INDIAN_TIMEZONE_SHIFT
+        try:
+            latest_post = self.session.query(Post).order_by(Post.posting_date)[-1]
+            print('Latest post: ' + str(latest_post))
+            return latest_post.posting_date.timestamp() + INDIAN_TIMEZONE_SHIFT
+        except IndexError:
+            return '01/01/2017'
         # Check on an hourly basis
         # Hourly check: the db may be updated thru our app also
         # return '-1 hour'
