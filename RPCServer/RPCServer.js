@@ -29,6 +29,7 @@ const pool = new pg.Pool(config);
 const server = jayson.server({
   get: function(args, callback) {
     pool.connect((err, client, done) => {
+      console.log("Logging Request...")
       if (err) {
 	console.log(err);
 	done();
@@ -38,7 +39,7 @@ const server = jayson.server({
       const query = client.query("SELECT * " +
 				 "FROM posts " +
 				 "ORDER BY date ASC;");
-      query.on("row", row => results.push(row));
+      query.on("row", row => {results.push(row); console.log(row)});
       query.on("end", () => {
 	done();
 	// console.log(results);
