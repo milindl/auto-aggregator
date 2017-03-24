@@ -1,3 +1,6 @@
-# auto-aggregator
+# Dashboard Auto Aggregator
 
-Aggregate posts from Share Auto/Tempo into a Database
+This repository aggregates and parses Share Auto/Tempo facebook posts
+for [Dashboard](https://dashboard.pclub.in), IITK.
+
+Contribution details are in the relevant markdown file.
